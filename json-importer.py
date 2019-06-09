@@ -160,7 +160,7 @@ def import_json_file(filename):
         count = count + 1
         print '%d/%d' % (count, total_count)
 
-def iterate_path(path):
+def list_dir(path):
     filenames = []
     files = os.listdir(path)
     for f in files:
@@ -169,7 +169,7 @@ def iterate_path(path):
 
 def main(argv):
     json_file_path = argv[1]	
-    filenames = iterate_path(json_file_path)
+    filenames = list_dir(json_file_path)
     for f in filenames:
         print 'importing: %s' % f
         import_json_file(f)
