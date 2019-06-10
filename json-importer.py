@@ -117,6 +117,13 @@ class DataBaseHandle(object):
 
 
 def filter_dict(raw_dict):
+    if raw_dict['XMId'] == 27168:
+        # 华海金湾公馆一期数据异常，需要修正。33268-1-0-0.json: "TFId":1419639,"XMId":27168,"LDId":27663
+        hnmj = float(raw_dict['HNMJ'])
+        if raw_dict['ZH'] in ['A', 'C'] and hnmj <= 50:
+            raw_dict['HNMJ'] = raw_dict['JZMJ']
+            raw_dict['JZMJ'] = hnmj + float(raw_dict['JZMJ'])
+
     # 过滤无用的字段
     sql_keys = ['TFId','XMId','LDId','XM','XMMC','HTH','LD','SZQ','HX','ZH','LC','FH','YT','HNMJ','JZMJ','ZT','BAJ','full_info']
     sql_values = []
@@ -169,12 +176,17 @@ def list_dir(path):
 
 def main(argv):
     json_file_path = argv[1]	
-    filenames = list_dir(json_file_path)
+    if os.path.isfile(json_file_path):
+        filenames = [json_file_path]
+    else:
+        filenames = list_dir(json_file_path)
     for f in filenames:
         print 'importing: %s' % f
         import_json_file(f)
 
 if __name__ == '__main__':
+    #python json-importer.py crawler/beian/data-20190609/33268-1-0-0.json 
+    #python json-importer.py crawler/beian/data-20190609/
     #print sys.getdefaultencoding()
     reload(sys)
     sys.setdefaultencoding('utf-8')
